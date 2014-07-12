@@ -162,7 +162,6 @@ class LC_Page_Mdl_WebPay_Payment extends LC_Page_Ex
      */
     private function createCharge($arrModuleSetting, $arrOrder, $arrPaymentData)
     {
-        $objPurchase = new SC_Helper_Purchase_Ex();
         if ($token = $arrPaymentData['token']) {
             $webpay = new WebPay($arrModuleSetting['secret_key']);
             $webpay->setAcceptLanguage('ja');
@@ -183,7 +182,12 @@ class LC_Page_Mdl_WebPay_Payment extends LC_Page_Ex
                 }
             }
         }
+
+        $objPurchase = new SC_Helper_Purchase_Ex();
+        $objQuery =& SC_Query_Ex::getSingletonInstance();
+        $objQuery->begin();
         $objPurchase->sfUpdateOrderStatus($arrOrder['order_id'], ORDER_PAY_END);
+        $objQuery->commit();
         $objPurchase->sendORderMail($arrOrder['order_id']);
 
         return null;
