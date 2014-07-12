@@ -17,7 +17,7 @@ class SC_Mdl_WebPay_Models_Module
     /**
      * 現在の設定を dtb_module からロード
      *
-     * @param boolean $initialize true ならデータが存在しない場合に array() を返す。 false なら完全性チェックをおこない、データが不正な場合に null を返す
+     * @param  boolean    $initialize true ならデータが存在しない場合に array() を返す。 false なら完全性チェックをおこない、データが不正な場合に null を返す
      * @return array|null 現在の設定値。ない場合は空配列かnull
      */
     public static function loadCurrentSetting($initialize = false)
@@ -38,6 +38,7 @@ class SC_Mdl_WebPay_Models_Module
                 $retval = self::lfCompleteSettingOrNull($data);
             }
         }
+
         return $retval;
     }
 
@@ -55,6 +56,7 @@ class SC_Mdl_WebPay_Models_Module
             if (!array_key_exists($key, $arrSetting) || $arrSetting[$key] === null || $arrSetting[$key] === '')
                 return null;
         }
+
         return $arrSetting;
     }
 
@@ -84,6 +86,7 @@ class SC_Mdl_WebPay_Models_Module
         if ($objQuery->insert('dtb_module', $arrVal) !==  1) {
             die('WebPayモジュールの初期化に失敗しました');
         }
+
         return true;
     }
 }

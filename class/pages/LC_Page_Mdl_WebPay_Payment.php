@@ -64,7 +64,7 @@ class LC_Page_Mdl_WebPay_Payment extends LC_Page_Ex
         $objFormParam = new SC_FormParam_Ex();
         $this->initFormParam($objFormParam);
 
-        switch($this->getMode()) {
+        switch ($this->getMode()) {
             case 'register':
                 $objFormParam->setParam($_REQUEST);
                 $objFormParam->convParam();
@@ -112,6 +112,7 @@ class LC_Page_Mdl_WebPay_Payment extends LC_Page_Ex
             && SC_Utils_Ex::sfIsInt($_SESSION['order_id'])) {
             return $_SESSION['order_id'];
         }
+
         return NULL;
     }
 
@@ -153,10 +154,10 @@ class LC_Page_Mdl_WebPay_Payment extends LC_Page_Ex
     /**
      * WebPay API で課金をおこない、決済を完了する
      *
-     * @param array $arrModuleSetting 読み込んだモジュール設定
-     * @param array $arrOrder dtb_order に入っている注文情報の列
-     * @param array $arrPaymentData WebPay での決済に利用するデータ
-     * @return string|null 決済時に発生したエラーを購入者に説明するメッセージ
+     * @param  array                $arrModuleSetting 読み込んだモジュール設定
+     * @param  array                $arrOrder         dtb_order に入っている注文情報の列
+     * @param  array                $arrPaymentData   WebPay での決済に利用するデータ
+     * @return string|null          決済時に発生したエラーを購入者に説明するメッセージ
      * @throws \WebPay\ApiException 購入者に原因がないエラー(設定ミスによるもの、通信障害によるもの)
      */
     private function createCharge($arrModuleSetting, $arrOrder, $arrPaymentData)
@@ -184,6 +185,7 @@ class LC_Page_Mdl_WebPay_Payment extends LC_Page_Ex
         }
         $objPurchase->sfUpdateOrderStatus($arrOrder['order_id'], ORDER_PAY_END);
         $objPurchase->sendORderMail($arrOrder['order_id']);
+
         return null;
     }
 }

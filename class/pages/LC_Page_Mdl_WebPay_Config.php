@@ -53,7 +53,7 @@ class LC_Page_Mdl_WebPay_Config extends LC_Page_Admin_Ex
         $objFormParam = new SC_FormParam_Ex();
         $this->initFormParam($objFormParam, $arrSetting);
 
-        switch($this->getMode()) {
+        switch ($this->getMode()) {
             case 'register':
                 $objFormParam->setParam($_REQUEST);
                 $objFormParam->convParam();
@@ -98,6 +98,7 @@ class LC_Page_Mdl_WebPay_Config extends LC_Page_Admin_Ex
         );
         $objPayment = new SC_Helper_Payment_Ex();
         $objPayment->save($arrVal);
+
         return true;
     }
 
