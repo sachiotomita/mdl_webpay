@@ -13,7 +13,8 @@ require_once(CLASS_EX_REALDIR . "page_extends/admin/LC_Page_Admin_Ex.php");
  * @package Page
  * @author WebPay
  */
-class LC_Page_Mdl_WebPay_Config extends LC_Page_Admin_Ex {
+class LC_Page_Mdl_WebPay_Config extends LC_Page_Admin_Ex
+{
 
     /**
      * Page を初期化する.
@@ -45,6 +46,7 @@ class LC_Page_Mdl_WebPay_Config extends LC_Page_Admin_Ex {
      */
     public function action()
     {
+        $this->initPaymentMethod();
         $arrSetting = $this->loadCurrentModuleSetting();
 
         $objFormParam = new SC_FormParam_Ex();
@@ -67,6 +69,35 @@ class LC_Page_Mdl_WebPay_Config extends LC_Page_Admin_Ex {
                 break;
         }
         $this->arrForm = $objFormParam->getFormParamList();
+    }
+
+    /**
+     * dtb_payment に WebPay モジュールによるクレジットカード決済がない場合は追加する
+     *
+     * @return boolean 実行した場合は true
+     */
+    private function initPaymentMethod()
+    {
+        $objQuery = SC_Query::getSingletonInstance();
+        $isExists = $objQuery->exists('dtb_payment', 'module_code = ?', array(MDL_WEBPAY_CODE));
+        if ($isExists) {
+            return false;
+        }
+
+        // rank, create_date, update_date, payment_id は自動設定される
+        $arrVal = array(
+            'payment_method' => 'クレジットカード決済',
+            'charge_flg' => 2, // 決済手数料設定不可
+            'rule_min' => 50, // 設定できる最低金額の下限
+            'upper_rule_max'  => 9999999, // 設定できる最高金額の上限
+            'module_id' => MDL_WEBPAY_ID,
+            'module_code' => MDL_WEBPAY_CODE,
+            'module_path' => MDL_WEBPAY_REALDIR . 'payment.php',
+            'memo03' => MDL_WEBPAY_CODE,
+        );
+        $objPayment = new SC_Helper_Payment_Ex();
+        $objPayment->save($arrVal);
+        return true;
     }
 
     /**
