@@ -6,6 +6,7 @@
  */
 
 require_once(CLASS_EX_REALDIR . "page_extends/admin/LC_Page_Admin_Ex.php");
+require_once(MDL_WEBPAY_CLASS_REALDIR . 'models/SC_Mdl_WebPay_Models_Module.php');
 
 /**
  * WebPay module admin config page class
@@ -47,7 +48,7 @@ class LC_Page_Mdl_WebPay_Config extends LC_Page_Admin_Ex
     public function action()
     {
         $this->initPaymentMethod();
-        $arrSetting = $this->loadCurrentModuleSetting();
+        $arrSetting = SC_Mdl_WebPay_Models_Module::loadCurrentSetting(true);
 
         $objFormParam = new SC_FormParam_Ex();
         $this->initFormParam($objFormParam, $arrSetting);
@@ -98,43 +99,6 @@ class LC_Page_Mdl_WebPay_Config extends LC_Page_Admin_Ex
         $objPayment = new SC_Helper_Payment_Ex();
         $objPayment->save($arrVal);
         return true;
-    }
-
-    /**
-     * 現在の設定を dtb_module からロード
-     *
-     * dtb_module に WebPay モジュールのエントリがない場合は初期化する
-     *
-     * @return array 現在の設定値。ない場合は空の配列
-     */
-    private function loadCurrentModuleSetting()
-    {
-        $objQuery = SC_Query::getSingletonInstance();
-        $objQuery->setLimit(1);
-        if ($objQuery->begin() !== MDB2_OK) {
-            die('WebPayモジュールの初期化に失敗しました');
-        }
-        $arrModule = $objQuery->select('module_id, sub_data', 'dtb_module', 'module_code = ?', array(MDL_WEBPAY_CODE));
-        if ($arrModule !== NULL && !empty($arrModule)) {
-            return unserialize($arrModule[0]['sub_data']);
-        }
-
-        $arrVal = array(
-            'module_id' => MDL_WEBPAY_ID,
-            'module_code' => MDL_WEBPAY_CODE,
-            'module_name' => 'WebPay決済モジュール',
-            'auto_update_flg' => 0,
-            'del_flg' => 0,
-            'create_date' => 'CURRENT_TIMESTAMP',
-            'update_date' => 'CURRENT_TIMESTAMP',
-        );
-        if ($objQuery->insert('dtb_module', $arrVal) !==  1) {
-            die('WebPayモジュールの初期化に失敗しました');
-        }
-        if ($objQuery->commit() !== MDB2_OK) {
-            die('WebPayモジュールの初期化に失敗しました');
-        }
-        return array();
     }
 
     /* パラメーター情報の初期化 */
