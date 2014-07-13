@@ -37,9 +37,9 @@
         </ul>
     </div>
 <!--{else}-->
+    <input type="hidden" name="card_info" value="token" />
     <!--{if $tpl_is_registered_customer === true}-->
         <label>
-            <input type="hidden" name="card_info" value="token" />
             <input type="checkbox" name="card_info" value="customer_from_token" checked="checked" />
             今回利用したカード情報を安全に保存し、次回からカード情報入力なしで利用する
         </label>

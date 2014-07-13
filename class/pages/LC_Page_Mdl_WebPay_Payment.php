@@ -68,6 +68,11 @@ class LC_Page_Mdl_WebPay_Payment extends LC_Page_Ex
         $this->initFormParam($objFormParam);
 
         switch ($this->getMode()) {
+            case 'delete_card':
+                $objCustomer->deleteActiveCard();
+                break;
+            case 'other_card':
+                break;
             case 'register':
                 $objFormParam->setParam($_REQUEST);
                 $objFormParam->convParam();
@@ -85,11 +90,11 @@ class LC_Page_Mdl_WebPay_Payment extends LC_Page_Ex
                 }
                 break;
             default:
+                $this->objSavedCard = $objCustomer->fetchSavedCardForCustomer();
                 break;
         }
         $this->tpl_is_registered_customer = $objCustomer->getCustomerId() !== 0;
         $this->tpl_webpay_publishable_key = $arrModuleSetting['publishable_key'];
-        $this->objSavedCard = $objCustomer->fetchSavedCardForCustomer();
         $this->tpl_url = $_SERVER['REQUEST_URI'];
     }
 

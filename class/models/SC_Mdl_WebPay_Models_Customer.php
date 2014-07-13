@@ -66,6 +66,22 @@ class SC_Mdl_WebPay_Models_Customer
         return $webpay_id;
     }
 
+    /**
+     * WebPay に保存したカード情報を削除する
+     *
+     * 顧客情報は課金を紐付いているため削除しない
+     *
+     * @return void
+     */
+    public function deleteActiveCard()
+    {
+        if ($this->lfIsNoCustomer()) {
+            return;
+        }
+        $webpay_id = $this->LoadWebPayId();
+        $this->objWebPay->customer->deleteActiveCard($webpay_id);
+    }
+
     private function lfIsNoCustomer()
     {
         return $this->customer_id === 0;
@@ -94,8 +110,7 @@ class SC_Mdl_WebPay_Models_Customer
     {
         $updated = false;
         if ($webpay_id !== null) {
-            $arrWithId = clone $arrAttributes;
-            $arrWithId['id'] = $webpay_id;
+            $arrWithId = array_merge(array('id' => $webpay_id), $arrAttributes);
             try {
                 $this->objWebPayCustomer = $this->objWebPay->customer->update($arrWithId);
                 $updated = true;
