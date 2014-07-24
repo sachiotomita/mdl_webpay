@@ -171,7 +171,7 @@ class SC_Mdl_WebPay_Models_Customer
      */
     private static function lfLoadMapping($objQuery)
     {
-        $s_data = $objQuery->getCol(MDL_WEBPAY_CUSTOMER_DATA_COL, 'dtb_payment', 'module_code = ?',  array(MDL_WEBPAY_CODE));
+        $s_data = $objQuery->getCol(MDL_WEBPAY_CUSTOMER_DATA_COL, 'dtb_payment', 'module_id = ?',  array(MDL_WEBPAY_ID));
         $arrMapping = unserialize($s_data[0]);
 
         return is_array($arrMapping) ? $arrMapping : array();
@@ -182,6 +182,6 @@ class SC_Mdl_WebPay_Models_Customer
     {
         unset($arrMapping[0]); // id > 0 なので 0 は必ず排除
         $arrNewVal = array(MDL_WEBPAY_CUSTOMER_DATA_COL => serialize($arrMapping));
-        $objQuery->update('dtb_payment', $arrNewVal, 'module_code = ?',  array(MDL_WEBPAY_CODE));
+        $objQuery->update('dtb_payment', $arrNewVal, 'module_id = ?',  array(MDL_WEBPAY_ID));
     }
 }

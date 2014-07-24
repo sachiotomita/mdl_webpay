@@ -148,7 +148,7 @@ class LC_Page_Mdl_WebPay_Payment extends LC_Page_Ex
 
         $objPayment = new SC_Helper_Payment_Ex();
         $arrPayment = $objPayment->get($arrOrder['payment_id']);
-        if ($arrPayment === null || $arrPayment['module_code'] !== MDL_WEBPAY_CODE) {
+        if ($arrPayment === null || $arrPayment['module_id'] !== MDL_WEBPAY_ID) {
             SC_Utils_Ex::sfDispSiteError(FREE_ERROR_MSG, '', true, '支払方法が不正です。<br />この手続きは無効となりました。');
         }
     }
