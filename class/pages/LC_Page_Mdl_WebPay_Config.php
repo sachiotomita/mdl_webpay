@@ -80,7 +80,7 @@ class LC_Page_Mdl_WebPay_Config extends LC_Page_Admin_Ex
     private function initPaymentMethod()
     {
         $objQuery = SC_Query::getSingletonInstance();
-        $isExists = $objQuery->exists('dtb_payment', 'module_code = ?', array(MDL_WEBPAY_CODE));
+        $isExists = $objQuery->exists('dtb_payment', 'module_id = ?', array(MDL_WEBPAY_ID));
         if ($isExists) {
             return false;
         }
@@ -92,7 +92,6 @@ class LC_Page_Mdl_WebPay_Config extends LC_Page_Admin_Ex
             'rule_min' => 50, // 設定できる最低金額の下限
             'upper_rule_max'  => 9999999, // 設定できる最高金額の上限
             'module_id' => MDL_WEBPAY_ID,
-            'module_code' => MDL_WEBPAY_CODE,
             'module_path' => MDL_WEBPAY_REALDIR . 'payment.php',
             'memo03' => MDL_WEBPAY_CODE,
         );
@@ -107,8 +106,8 @@ class LC_Page_Mdl_WebPay_Config extends LC_Page_Admin_Ex
     {
         // 仕様変更に備えて十分大きい値にしておく
         $max_length = 256;
-        $objFormParam->addParam('非公開鍵', 'secret_key', $max_length, 'a', array('EXIST_CHECK', 'MAX_LENGTH_CHECK', 'ALNUM_CHECK'));
-        $objFormParam->addParam('公開可能鍵', 'publishable_key', $max_length, 'a', array('EXIST_CHECK', 'MAX_LENGTH_CHECK', 'ALNUM_CHECK'));
+        $objFormParam->addParam('非公開鍵', 'secret_key', $max_length, 'a', array('EXIST_CHECK', 'MAX_LENGTH_CHECK', 'GRAPH_CHECK'));
+        $objFormParam->addParam('公開可能鍵', 'publishable_key', $max_length, 'a', array('EXIST_CHECK', 'MAX_LENGTH_CHECK', 'GRAPH_CHECK'));
     }
 
     /* バリデーション済みの設定値を dtb_module に保存 */
