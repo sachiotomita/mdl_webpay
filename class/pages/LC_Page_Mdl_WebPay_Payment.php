@@ -73,13 +73,15 @@ class LC_Page_Mdl_WebPay_Payment extends LC_Page_Ex
                 break;
             case 'other_card':
                 break;
-            case 'register':
+            case 'pay':
                 $objFormParam->setParam($_REQUEST);
                 $objFormParam->convParam();
                 $this->arrErr = $this->checkFormParamError($objFormParam);
+                SC_Utils::sfPrintR($this->arrErr);
                 if (empty($this->arrErr)) {
                     $arrData = $objFormParam->getHashArray();
                     $message = $this->createCharge($objWebPay, $arrOrder, $objCustomer, $arrData);
+                    SC_Utils::sfPrintR($message);
                     if ($message === null) {
                         SC_Response_Ex::sendRedirect(SHOPPING_COMPLETE_URLPATH);
                         SC_Response_Ex::actionExit();
@@ -105,11 +107,8 @@ class LC_Page_Mdl_WebPay_Payment extends LC_Page_Ex
             case DEVICE_TYPE_MOBILE:
                 SC_Utils_Ex::sfDispSiteError(FREE_ERROR_MSG, '', true, '携帯電話からはクレジットカード決済を利用できせん');
                 break;
-            case DEVICE_TYPE_SMARTPHONE:
-                $this->tpl_form_bloc_path = MDL_WEBPAY_TEMPLATE_REALDIR . 'sphone/bloc/token_payment.tpl';
-                break;
-            case DEVICE_TYPE_PC:
-                $this->tpl_form_bloc_path = MDL_WEBPAY_TEMPLATE_REALDIR . 'default/bloc/token_payment.tpl';
+            default:
+                $this->tpl_mainpage = MDL_WEBPAY_TEMPLATE_REALDIR . 'default/load_payment_module.tpl';
                 break;
         }
     }
@@ -167,8 +166,8 @@ class LC_Page_Mdl_WebPay_Payment extends LC_Page_Ex
     {
         // 仕様変更に備えて十分大きい値にしておく
         $max_length = 256;
-        $objFormParam->addParam('カードトークン', 'webpay_token', $max_length, 'a', array('MAX_LENGTH_CHECK', 'ALNUM_CHECK'));
-        $objFormParam->addParam('支払方法', 'card_info', $max_length, 'a', array('EXIST_CHECK', 'MAX_LENGTH_CHECK', 'ALNUM_CHECK'));
+        $objFormParam->addParam('カードトークン', 'webpay_token', $max_length, 'a', array('MAX_LENGTH_CHECK', 'GRAPH_CHECK'));
+        $objFormParam->addParam('支払方法', 'card_info', $max_length, 'a', array('EXIST_CHECK', 'MAX_LENGTH_CHECK', 'GRAPH_CHECK'));
     }
 
     /* パラメータチェック */
@@ -242,7 +241,7 @@ class LC_Page_Mdl_WebPay_Payment extends LC_Page_Ex
         $objQuery->begin();
         $objPurchase->sfUpdateOrderStatus($arrOrder['order_id'], ORDER_PAY_END);
         $objQuery->commit();
-        $objPurchase->sendORderMail($arrOrder['order_id']);
+        $objPurchase->sendOrderMail($arrOrder['order_id']);
 
         return null;
     }
