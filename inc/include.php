@@ -7,7 +7,7 @@
  */
 
 define('MDL_WEBPAY', true);
-define('MDL_WEBPAY_ID', '99999'); // developmentt
+define('MDL_WEBPAY_ID', '39258'); // development
 define('MDL_WEBPAY_CODE', 'mdl_webpay');
 define('MDL_WEBPAY_VERSION', '1.0.0');
 
