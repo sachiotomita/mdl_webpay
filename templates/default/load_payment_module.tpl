@@ -13,7 +13,7 @@
         <input type="hidden" name="<!--{$smarty.const.TRANSACTION_ID_NAME}-->" value="<!--{$transactionid}-->" />
         <input type="hidden" name="mode" value="pay" />
 
-        <!--{if !empty($arrErr)}-->
+        <!--{if count($arrErr) > 0}-->
             <p class="remark attention"><!--{foreach from=$arrErr item=errorMessage}-->
             <!--{$errorMessage}-->
             <!--{/foreach}--></p>
