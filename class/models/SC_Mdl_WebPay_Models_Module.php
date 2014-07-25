@@ -52,7 +52,7 @@ class SC_Mdl_WebPay_Models_Module
         } catch (Exception $e) {
             return null;
         }
-        foreach ($key as self::$requiredKeys) {
+        foreach (self::$requiredKeys as $key) {
             if (!array_key_exists($key, $arrSetting) || $arrSetting[$key] === null || $arrSetting[$key] === '')
                 return null;
         }
