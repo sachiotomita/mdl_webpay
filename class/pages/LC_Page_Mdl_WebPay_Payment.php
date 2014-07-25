@@ -175,7 +175,7 @@ class LC_Page_Mdl_WebPay_Payment extends LC_Page_Ex
     {
         $arrErr = $objFormParam->checkError();
         $card_info = $objFormParam->getValue('card_info');
-	$webpay_token = $objFormParam->getValue('webpay_token');
+        $webpay_token = $objFormParam->getValue('webpay_token');
         if (($card_info === 'token' || $card_info === 'customer_from_token') && empty($webpay_token)) {
             $arrErr['webpay_token'] = 'カードトークンが入力されていません';
         }
