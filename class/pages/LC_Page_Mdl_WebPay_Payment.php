@@ -77,11 +77,9 @@ class LC_Page_Mdl_WebPay_Payment extends LC_Page_Ex
                 $objFormParam->setParam($_REQUEST);
                 $objFormParam->convParam();
                 $this->arrErr = $this->checkFormParamError($objFormParam);
-                SC_Utils::sfPrintR($this->arrErr);
                 if (empty($this->arrErr)) {
                     $arrData = $objFormParam->getHashArray();
                     $message = $this->createCharge($objWebPay, $arrOrder, $objCustomer, $arrData);
-                    SC_Utils::sfPrintR($message);
                     if ($message === null) {
                         SC_Response_Ex::sendRedirect(SHOPPING_COMPLETE_URLPATH);
                         SC_Response_Ex::actionExit();
