@@ -79,7 +79,7 @@ class SC_Mdl_WebPay_Models_Customer
             return;
         }
         $webpay_id = $this->LoadWebPayId();
-        $this->objWebPay->customer->deleteActiveCard($webpay_id);
+        $this->objWebPay->customerDeleteActiveCard($webpay_id);
     }
 
     private function lfIsNoCustomer()
@@ -97,7 +97,7 @@ class SC_Mdl_WebPay_Models_Customer
         if ($webpay_customer_id === null)
             return null;
         try {
-            $this->objWebPayCustomer = $this->objWebPay->customer->retrieve($webpay_customer_id);
+            $this->objWebPayCustomer = $this->objWebPay->customerRetrieve($webpay_customer_id);
         } catch (\WebPay\ErrorResponse\InvalidRequestException $e) {
             $this->lfRemoveWebPayId();
         }
@@ -112,7 +112,7 @@ class SC_Mdl_WebPay_Models_Customer
         if ($webpay_id !== null) {
             $arrWithId = array_merge(array('id' => $webpay_id), $arrAttributes);
             try {
-                $this->objWebPayCustomer = $this->objWebPay->customer->update($arrWithId);
+                $this->objWebPayCustomer = $this->objWebPay->customerUpdate($arrWithId);
                 $updated = true;
             } catch (\WebPay\ErrorResponse\InvalidRequestException $e) {
                 if ($e->getData()->error->param !== 'id')
@@ -120,7 +120,7 @@ class SC_Mdl_WebPay_Models_Customer
             }
         }
         if (!$updated) {
-            $this->objWebPayCustomer = $this->objWebPay->customer->create($arrAttributes);
+            $this->objWebPayCustomer = $this->objWebPay->customerCreate($arrAttributes);
         }
 
         return $this->objWebPayCustomer->id;

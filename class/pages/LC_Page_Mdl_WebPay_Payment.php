@@ -6,9 +6,9 @@
  */
 
 require_once(CLASS_EX_REALDIR . "page_extends/LC_Page_Ex.php");
+require_once(MDL_WEBPAY_CLASS_REALDIR . 'SC_Mdl_WebPay_Wrapper.php');
 require_once(MDL_WEBPAY_CLASS_REALDIR . 'models/SC_Mdl_WebPay_Models_Customer.php');
 require_once(MDL_WEBPAY_CLASS_REALDIR . 'models/SC_Mdl_WebPay_Models_Module.php');
-use WebPay\WebPay;
 
 /**
  * WebPay module payment page class
@@ -62,7 +62,7 @@ class LC_Page_Mdl_WebPay_Payment extends LC_Page_Ex
         $this->validateOrderConsistency($arrOrder);
 
         $arrModuleSetting = SC_Mdl_WebPay_Models_Module::loadCurrentSetting();
-        $objWebPay = $this->createWebPayClient($arrModuleSetting);
+        $objWebPay = new SC_Mdl_WebPay_Wrapper($arrModuleSetting['secret_key']);
         $objCustomer = new SC_Mdl_WebPay_Models_Customer($objWebPay, $arrOrder['customer_id']);
         $objFormParam = new SC_FormParam_Ex();
         $this->initFormParam($objFormParam);
@@ -150,15 +150,6 @@ class LC_Page_Mdl_WebPay_Payment extends LC_Page_Ex
         }
     }
 
-    /* WebPay インスタンスを作成する */
-    private function createWebPayClient($arrModuleSetting)
-    {
-        $objWebPay = new WebPay($arrModuleSetting['secret_key']);
-        $objWebPay->setAcceptLanguage('ja');
-
-        return $objWebPay;
-    }
-
     /* パラメーター情報の初期化 */
     private function initFormParam($objFormParam)
     {
@@ -220,7 +211,7 @@ class LC_Page_Mdl_WebPay_Payment extends LC_Page_Ex
             case 'token':
                 $arrChargeParams['card'] = $arrPaymentData['webpay_token'];
                 try {
-                    $objWebPay->charge->create($arrChargeParams);
+                    $objWebPay->chargeCreate($arrChargeParams);
                 } catch (\WebPay\ErrorResponse\CardException $e) {
                     return $e->getData()->error->message;
                 } catch (\WebPay\ErrorResponse\InvalidRequestException $e) {
@@ -250,7 +241,7 @@ class LC_Page_Mdl_WebPay_Payment extends LC_Page_Ex
     {
         $arrChargeParams['customer'] = $customer_id;
         try {
-            $objWebPay->charge->create($arrChargeParams);
+            $objWebPay->chargeCreate($arrChargeParams);
         } catch (\WebPay\ErrorResponse\CardException $e) {
             return $e->getData()->error->message;
         } catch (\WebPay\ErrorResponse\InvalidRequestException $e) {
