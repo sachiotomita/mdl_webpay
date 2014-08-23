@@ -238,7 +238,7 @@ class LC_Page_Mdl_WebPay_Payment extends LC_Page_Ex
         $objPurchase = new SC_Helper_Purchase_Ex();
         $objQuery = SC_Query_Ex::getSingletonInstance();
         $objQuery->begin();
-        $objPurchase->sfUpdateOrderStatus($arrOrder['order_id'], ORDER_PAY_END);
+        $objPurchase->sfUpdateOrderStatus($arrOrder['order_id'], ORDER_PRE_END);
         $objQuery->commit();
         $objPurchase->sendOrderMail($arrOrder['order_id']);
 
