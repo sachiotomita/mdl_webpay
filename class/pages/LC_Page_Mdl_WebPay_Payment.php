@@ -153,10 +153,10 @@ class LC_Page_Mdl_WebPay_Payment extends LC_Page_Ex
     /* WebPay インスタンスを作成する */
     private function createWebPayClient($arrModuleSetting)
     {
-        $webpay = new WebPay($arrModuleSetting['secret_key']);
-        $webpay->setAcceptLanguage('ja');
+        $objWebPay = new WebPay($arrModuleSetting['secret_key']);
+        $objWebPay->setAcceptLanguage('ja');
 
-        return $webpay;
+        return $objWebPay;
     }
 
     /* パラメーター情報の初期化 */
