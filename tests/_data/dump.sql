@@ -744,6 +744,7 @@ CREATE TABLE `dtb_customer` (
 
 LOCK TABLES `dtb_customer` WRITE;
 /*!40000 ALTER TABLE `dtb_customer` DISABLE KEYS */;
+INSERT INTO `dtb_customer` VALUES (1,'試験','太郎','シケン','タロウ',NULL,'100','0001',NULL,392,3,'代田区神田神保町','1-3-5','test@example.com',NULL,'0120','123','456',NULL,NULL,NULL,1,NULL,'1901-01-01 00:00:00','ec729f5a1ce8d1aabb79377a955bb7108fa391da8e12389852b824a5bdd29fee',1,'ec729f5a1ce8d1aabb79377a955bb7108fa391da8e12389852b824a5bdd29fee','biatrulouh','r540860ecc54d67bcRBAdp',NULL,NULL,0,0,0,NULL,2,'2014-09-04 12:54:04','2014-09-04 12:54:04',0,NULL,3);
 /*!40000 ALTER TABLE `dtb_customer` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -757,7 +758,7 @@ DROP TABLE IF EXISTS `dtb_customer_customer_id_seq`;
 CREATE TABLE `dtb_customer_customer_id_seq` (
   `sequence` int(11) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`sequence`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -766,6 +767,7 @@ CREATE TABLE `dtb_customer_customer_id_seq` (
 
 LOCK TABLES `dtb_customer_customer_id_seq` WRITE;
 /*!40000 ALTER TABLE `dtb_customer_customer_id_seq` DISABLE KEYS */;
+INSERT INTO `dtb_customer_customer_id_seq` VALUES (1);
 /*!40000 ALTER TABLE `dtb_customer_customer_id_seq` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -3673,4 +3675,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2014-09-04 21:49:03
+-- Dump completed on 2014-09-04 21:54:13
