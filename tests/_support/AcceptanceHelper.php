@@ -19,6 +19,7 @@ class AcceptanceHelper extends \Codeception\Module
     {
         $this->indicateTestMode();
         $this->startDoubleServer();
+        $this->installMdlWebPay();
     }
 
     public function _after(\Codeception\TestCase $test)
@@ -130,5 +131,10 @@ class AcceptanceHelper extends \Codeception\Module
             proc_close($this->proc);
             $this->proc = null;
         }
+    }
+
+    private function installMdlWebPay()
+    {
+        include('install_webpay.php');
     }
 }

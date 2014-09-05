@@ -7,9 +7,9 @@
 class_name: AcceptanceTester
 modules:
     enabled:
-        - AcceptanceHelper
         - Db
         - WebDriver
+        - AcceptanceHelper
     config:
         WebDriver:
             url: 'http://localhost:9999'
