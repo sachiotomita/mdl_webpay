@@ -59,7 +59,7 @@ class SC_Mdl_WebPay_Models_Customer
             return null;
         }
         $webpay_id = $this->LoadWebPayId();
-        $arrAttributes = array('card' => $token, 'description' => $this->customer_id);
+        $arrAttributes = array('card' => $token, 'description' => (string) $this->customer_id);
         $webpay_id = $this->lfUpdateCustomer($webpay_id, $arrAttributes);
         $this->lfInsertWebPayId($webpay_id);
 

@@ -185,9 +185,9 @@ class LC_Page_Mdl_WebPay_Payment extends LC_Page_Ex
     private function createCharge($objWebPay, $arrOrder, $objCustomer, $arrPaymentData)
     {
         $arrChargeParams = array(
-            'amount' => $arrOrder['payment_total'],
+            'amount' => intval($arrOrder['payment_total'], 10),
             'currency' => 'jpy',
-            'description' => $arrOrder['order_id'],
+            'description' => (string) $arrOrder['order_id'],
         );
         switch ($arrPaymentData['card_info']) {
             case 'customer':

@@ -24,7 +24,7 @@ $I->seeInData('card');
 $I->seeInData('currency', 'jpy');
 $I->seeInData('description', '1');
 
-$I->seeInLogs(['/https:\/\/api\.webpay\.jp charge\.create: a:4:{s:6:"amount";s:4:"2782";s:8:"currency";s:3:"jpy";s:11:"description";s:1:"1";s:4:"card";s:19:"tok_.*";} from 127.0.0.1/']);
+$I->seeInLogs(['/https:\/\/api\.webpay\.jp charge\.create: a:4:{s:6:"amount";i:2782;s:8:"currency";s:3:"jpy";s:11:"description";s:1:"1";s:4:"card";s:19:"tok_.*";} from 127.0.0.1/']);
 
 $admin->does(function(AcceptanceTester $I) {
     $steps = new AcceptanceTester\AdminSteps($I);

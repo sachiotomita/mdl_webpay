@@ -52,7 +52,7 @@ class AcceptanceHelper extends \Codeception\Module
         if ($value === null) {
             $this->assertNotEmpty($data[$key]);
         } else {
-            $this->assertEquals($value, $data[$key]);
+            \PHPUnit_Framework_Assert::assertSame($value, $data[$key]);
         }
     }
 
