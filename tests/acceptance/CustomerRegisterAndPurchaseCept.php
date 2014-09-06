@@ -43,6 +43,11 @@ $I->seeInData('customer', $customer_id);
 $I->seeInData('currency', 'jpy');
 $I->seeInData('description', '2');
 
+$I->seeInLogs([
+    '/https:\/\/api\.webpay\.jp customer\.retrieve/',
+    '/https:\/\/api\.webpay\.jp charge\.create/',
+]);
+
 $admin->does(function(AcceptanceTester $I) {
     $steps = new AcceptanceTester\AdminSteps($I);
     $steps->seeLastOrder([

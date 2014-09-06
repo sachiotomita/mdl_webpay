@@ -60,9 +60,14 @@ class CustomerSteps extends \AcceptanceTester
         $I->seeInData('card');
         $I->loadRequest();
         $I->seeInData('amount', 2782);
-        $I->dontSeeInData('card', $customer_id);
+        $I->dontSeeInData('card');
         $I->seeInData('customer', $customer_id);
         $I->seeInData('currency', 'jpy');
         $I->seeInData('description', '1');
+
+        $I->seeInLogs([
+            '/https:\/\/api\.webpay\.jp customer\.create/',
+            '/https:\/\/api\.webpay\.jp charge\.create/',
+        ]);
     }
 }

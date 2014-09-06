@@ -9,6 +9,7 @@ class AcceptanceHelper extends \Codeception\Module
     private $proc = null;
     private $redisClient;
     private $lastRequest = null;
+    private $logFile = null;
 
     public function __construct()
     {
@@ -20,12 +21,14 @@ class AcceptanceHelper extends \Codeception\Module
         $this->indicateTestMode();
         $this->startDoubleServer();
         $this->installMdlWebPay();
+        $this->loadLogFile();
     }
 
     public function _after(\Codeception\TestCase $test)
     {
         $this->disableTestMode();
         $this->shutdownDoubleServer();
+        $this->closeLogFile();
     }
 
     public function loadRequest()
@@ -130,6 +133,16 @@ class AcceptanceHelper extends \Codeception\Module
         $this->pushMockResponse(200, json_encode(array_merge($default, $options)));
     }
 
+    public function seeInLogs(array $patterns)
+    {
+        foreach ($patterns as $pattern) {
+            $line = stream_get_line($this->logFile, 1024, "\n");
+            \PHPUnit_Framework_Assert::assertRegExp($pattern, $line);
+        }
+        $rest = stream_get_line($this->logFile, 1024, "\n");
+        $this->assertFalse($rest);
+    }
+
     private function generateRandomId($length = 15)
     {
         $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -183,5 +196,20 @@ class AcceptanceHelper extends \Codeception\Module
     private function installMdlWebPay()
     {
         include('install_webpay.php');
+    }
+
+    private function loadLogFile()
+    {
+        $logName = sprintf(MDL_WEBPAY_LOG_REALFILE_FORMAT, date('Ymd'));
+        $this->logFile = fopen($logName, 'r');
+        fseek($this->logFile, 0, SEEK_END);
+    }
+
+    private function closeLogFile()
+    {
+        if ($this->logFile !== null) {
+            fclose($this->logFile);
+            $this->logFile = null;
+        }
     }
 }

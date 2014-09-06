@@ -35,5 +35,10 @@ $I->click('登録したカードを削除する');
 $I->dontSee('次のカードが登録されています。');
 $I->waitForElement('#WP_checkoutBox', 5);
 
+$I->seeInLogs([
+    '/https:\/\/api\.webpay\.jp customer\.retrieve: s:14:"cus_registered"/',
+    '/https:\/\/api\.webpay\.jp customer\.delete_active_card: s:14:"cus_registered"/',
+]);
+
 $I->loadRequest();
 $I->seeRequestTo('DELETE', '/customers/' . $customer_id . '/active_card');

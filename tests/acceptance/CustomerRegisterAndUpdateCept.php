@@ -41,6 +41,12 @@ $I->loadRequest();
 $I->seeRequestTo('POST', '/customers/' . $customer_id);
 $I->seeInData('card');
 
+$I->seeInLogs([
+    '/https:\/\/api\.webpay\.jp customer\.retrieve: s:14:"cus_registered"/',
+    '/https:\/\/api\.webpay\.jp customer\.update: a:3:{s:2:"id";s:14:"cus_registered";s:4:"card";s:19:"tok_[^"]*";s:11:"description";i:1;}/',
+    '/https:\/\/api\.webpay\.jp charge\.create: a:4:{s:6:"amount";s:4:"2782";s:8:"currency";s:3:"jpy";s:11:"description";s:1:"2";s:8:"customer";s:14:"cus_registered";}/'
+]);
+
 $I->loadRequest();
 $I->seeRequestTo('POST', '/charges');
 $I->seeInData('amount', 2782);
