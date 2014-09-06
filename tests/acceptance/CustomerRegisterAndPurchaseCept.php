@@ -5,9 +5,13 @@ $customer_attrs = ['id' => $customer_id, 'description' => '1'];
 $I = new AcceptanceTester\CustomerSteps($scenario);
 $I->am('a new customer');
 $I->wantTo('register my card to purchase again');
-$I->haveFriend('admin')->does(registerWebPay);
-$I->login();
+$admin = $I->haveFriend('admin');
+$admin->does(function(AcceptanceTester $I) {
+    $steps = new AcceptanceTester\AdminSteps($I);
+    $steps->registerWebPayModule();
+});
 
+$I->login();
 $I->registerCardByPurchase($customer_attrs);
 
 $I->expectTo('buy another item with the previously registered card');
@@ -38,3 +42,12 @@ $I->seeInData('amount', 2782);
 $I->seeInData('customer', $customer_id);
 $I->seeInData('currency', 'jpy');
 $I->seeInData('description', '2');
+
+$admin->does(function(AcceptanceTester $I) {
+    $steps = new AcceptanceTester\AdminSteps($I);
+    $steps->seeLastOrder([
+        'customer_id' => '1',
+        'payment_id' => 'クレジットカード決済',
+        'status' => '入金済み',
+    ]);
+});

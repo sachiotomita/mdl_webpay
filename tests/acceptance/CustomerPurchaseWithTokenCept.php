@@ -2,7 +2,12 @@
 $I = new AcceptanceTester\CustomerSteps($scenario);
 $I->am('a new customer');
 $I->wantTo('purchase with my card');
-$I->haveFriend('admin')->does(registerWebPay);
+$admin = $I->haveFriend('admin');
+$admin->does(function(AcceptanceTester $I) {
+    $steps = new AcceptanceTester\AdminSteps($I);
+    $steps->registerWebPayModule();
+});
+
 $I->login();
 $I->amOnPage('/products/list.php');
 $I->click('おなべ');
@@ -18,3 +23,12 @@ $I->seeInData('amount', 2782);
 $I->seeInData('card');
 $I->seeInData('currency', 'jpy');
 $I->seeInData('description', '1');
+
+$admin->does(function(AcceptanceTester $I) {
+    $steps = new AcceptanceTester\AdminSteps($I);
+    $steps->seeLastOrder([
+        'customer_id' => '1',
+        'payment_id' => 'クレジットカード決済',
+        'status' => '入金済み',
+    ]);
+});

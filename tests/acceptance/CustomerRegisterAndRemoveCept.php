@@ -5,7 +5,12 @@ $customer_attrs = ['id' => $customer_id, 'description' => '1'];
 $I = new AcceptanceTester\CustomerSteps($scenario);
 $I->am('a new customer');
 $I->wantTo('register my card to purchase again');
-$I->haveFriend('admin')->does(registerWebPay);
+$admin = $I->haveFriend('admin');
+$admin->does(function(AcceptanceTester $I) {
+    $steps = new AcceptanceTester\AdminSteps($I);
+    $steps->registerWebPayModule();
+});
+
 $I->login();
 
 $I->registerCardByPurchase($customer_attrs);
