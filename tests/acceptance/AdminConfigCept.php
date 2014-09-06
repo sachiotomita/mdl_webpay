@@ -15,7 +15,14 @@ $I->see('公開可能鍵');
 
 $I->fillField('secret_key', WEBPAY_SECRET_KEY);
 $I->fillField('publishable_key', WEBPAY_PUBLISHABLE_KEY);
+$I->selectOption('input[name=payment]', 'authorize');
 $I->click('この内容で登録する');
 
 $I->canSeeInField('secret_key', WEBPAY_SECRET_KEY);
 $I->canSeeInField('publishable_key', WEBPAY_PUBLISHABLE_KEY);
+$I->canSeeOptionIsSelected('input[name=payment]', 'authorize');
+
+$I->selectOption('input[name=payment]', 'capture');
+$I->click('この内容で登録する');
+
+$I->canSeeOptionIsSelected('input[name=payment]', 'capture');

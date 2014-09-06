@@ -17,7 +17,7 @@ class AdminSteps extends \AcceptanceTester
         $I->click('LOGIN');
     }
 
-    public function registerWebPayModule()
+    public function registerWebPayModule($payment = 'capture')
     {
         $I = $this;
         $I->login();
@@ -25,6 +25,7 @@ class AdminSteps extends \AcceptanceTester
         $I->amOnPage('/admin/load_module_config.php?module_id=' . MDL_WEBPAY_ID);
         $I->fillField('secret_key', WEBPAY_SECRET_KEY);
         $I->fillField('publishable_key', WEBPAY_PUBLISHABLE_KEY);
+        $I->selectOption('input[name=payment]', $payment);
         $I->click('この内容で登録する');
 
         $I->seeInDatabase('dtb_payment',  array('payment_id' => 5, 'memo03' => MDL_WEBPAY_CODE));
