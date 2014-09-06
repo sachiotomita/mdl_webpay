@@ -37,6 +37,12 @@ class AcceptanceHelper extends \Codeception\Module
         $this->lastRequest = unserialize($data);
     }
 
+    public function seeRequestTo($method, $path)
+    {
+        $this->assertEquals($method, $this->lastRequest['method']);
+        $this->assertEquals($path, $this->lastRequest['request_uri']);
+    }
+
     public function seeInData($key, $value = null)
     {
         $data = json_decode($this->lastRequest['body'], true);
@@ -45,6 +51,12 @@ class AcceptanceHelper extends \Codeception\Module
         } else {
             $this->assertEquals($value, $data[$key]);
         }
+    }
+
+    public function dontSeeInData($key)
+    {
+        $data = json_decode($this->lastRequest['body'], true);
+        $this->assertEmpty($data[$key]);
     }
 
     public function pushMockResponse($statusCode, $body)
@@ -90,6 +102,34 @@ class AcceptanceHelper extends \Codeception\Module
         $this->pushMockResponse(200, json_encode(array_merge($default, $options)));
     }
 
+    public function pushMockCustomerResponse($options = null)
+    {
+        if ($options === null) {
+            $options = array();
+        }
+        $default = [
+            'id'          => 'cus_05u0uscIO8ZC1kX',
+            'object'      => 'customer',
+            'livemode'    => false,
+            'created'     => time(),
+            'email'       => null,
+            'description' => null,
+            'active_card' => [
+                'object'      => 'card',
+                'exp_year'    => 2019,
+                'exp_month'   => 12,
+                'fingerprint' => '2jj15b5b2fe460809b8bb90bae6eeac0e0e0987bd7',
+                'name'        => 'TEST TEST',
+                'country'     => 'JP',
+                'type'        => 'Visa',
+                'cvc_check'   => 'pass',
+                'last4'       => '4242'
+            ],
+            'recursions'  => []
+        ];
+        $this->pushMockResponse(200, json_encode(array_merge($default, $options)));
+    }
+
     private function generateRandomId($length = 15)
     {
         $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -112,6 +152,7 @@ class AcceptanceHelper extends \Codeception\Module
 
     private function startDoubleServer()
     {
+        $this->clearPending();
         $descriptorspec = array(
             0 => array('pipe', 'r'),
             1 => array('file', '/tmp/debug.out', 'a'),
@@ -122,6 +163,12 @@ class AcceptanceHelper extends \Codeception\Module
             throw new \Exception('Failed to start double server process');
         }
         fclose($pipes[0]);
+    }
+
+    private function clearPending()
+    {
+        $this->redisClient->del('mdl_webpay_test_requests');
+        $this->redisClient->del('mdl_webpay_test_responses');
     }
 
     private function shutdownDoubleServer()

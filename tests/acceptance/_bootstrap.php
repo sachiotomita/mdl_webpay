@@ -25,3 +25,4 @@ function registerWebPay(AcceptanceTester $I) {
     $I->haveInDatabase('dtb_payment_options', array('deliv_id' => 1, 'payment_id' => 5, 'rank' => 5));
     $I->haveInDatabase('dtb_payment_options', array('deliv_id' => 2, 'payment_id' => 5, 'rank' => 2));
 }
+\Codeception\Util\Autoload::registerSuffix('Steps', __DIR__.DIRECTORY_SEPARATOR.'_steps');
