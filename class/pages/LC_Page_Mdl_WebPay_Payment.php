@@ -79,7 +79,8 @@ class LC_Page_Mdl_WebPay_Payment extends LC_Page_Ex
                 $this->arrErr = $this->checkFormParamError($objFormParam);
                 if (empty($this->arrErr)) {
                     $arrData = $objFormParam->getHashArray();
-                    $message = $this->createCharge($objWebPay, $arrOrder, $objCustomer, $arrData);
+                    $authorize = $arrModuleSetting['payment'] == 'authorize';
+                    $message = $this->createCharge($objWebPay, $authorize, $arrOrder, $objCustomer, $arrData);
                     if ($message === null) {
                         SC_Response_Ex::sendRedirect(SHOPPING_COMPLETE_URLPATH);
                         SC_Response_Ex::actionExit();
@@ -133,6 +134,7 @@ class LC_Page_Mdl_WebPay_Payment extends LC_Page_Ex
 
             // 会計済み。許容しうる
             case ORDER_NEW:
+            case ORDER_PAY_WAIT:
             case ORDER_PRE_END:
                 SC_Response_Ex::sendRedirect(SHOPPING_COMPLETE_URLPATH);
                 SC_Response_Ex::actionExit();
@@ -176,19 +178,23 @@ class LC_Page_Mdl_WebPay_Payment extends LC_Page_Ex
      * WebPay API で課金をおこない、決済を完了する
      *
      * @param  \WebPay\WebPay                $objWebPay      WebPay client
+     * @param  bool                          $authorize      trueなら仮売上にする
      * @param  array                         $arrOrder       dtb_order に入っている注文情報の列
      * @param  array                         $arrPaymentData 利用者の入力
      * @param  SC_Mdl_WebPay_Models_Customer $objCustomer
      * @return string|null                   決済時に発生したエラーを購入者に説明するメッセージ
      * @throws \WebPay\ApiException          購入者に原因がないエラー(設定ミスによるもの、通信障害によるもの)
      */
-    private function createCharge($objWebPay, $arrOrder, $objCustomer, $arrPaymentData)
+    private function createCharge($objWebPay, $authorize, $arrOrder, $objCustomer, $arrPaymentData)
     {
         $arrChargeParams = array(
             'amount' => intval($arrOrder['payment_total'], 10),
             'currency' => 'jpy',
             'description' => (string) $arrOrder['order_id'],
         );
+        if ($authorize) {
+            $arrChargeParams['capture'] = false;
+        }
         switch ($arrPaymentData['card_info']) {
             case 'customer':
                 $customer_id = $objCustomer->loadWebPayId();
@@ -229,7 +235,7 @@ class LC_Page_Mdl_WebPay_Payment extends LC_Page_Ex
         $objPurchase = new SC_Helper_Purchase_Ex();
         $objQuery = SC_Query_Ex::getSingletonInstance();
         $objQuery->begin();
-        $objPurchase->sfUpdateOrderStatus($arrOrder['order_id'], ORDER_PRE_END);
+        $objPurchase->sfUpdateOrderStatus($arrOrder['order_id'], $authorize ? ORDER_PAY_WAIT : ORDER_PRE_END);
         $objQuery->commit();
         $objPurchase->sendOrderMail($arrOrder['order_id']);
 
