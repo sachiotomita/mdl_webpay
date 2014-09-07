@@ -1,4 +1,5 @@
 /vendor
+/WebPayExt.tar.gz
 
 tests/_output/*
 tests/acceptance/AcceptanceTester.php
