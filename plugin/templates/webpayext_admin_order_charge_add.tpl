@@ -38,6 +38,9 @@ function fnPlgWebPayExtCapture() {
     <tr>
         <th>状態</th>
         <td>
+            <!--{if $plg_webpayext_capture_error}-->
+                <span class="attention"><!--{$plg_webpayext_capture_error}--></span>
+            <!--{/if}-->
             <!--{if $plg_webpayext_objCharge->isCaptured()}-->
                 <!--{$plg_webpayext_objCharge->getAmount()|default:0|number_format}-->円の実売上
             <!--{else}-->

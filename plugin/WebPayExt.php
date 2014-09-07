@@ -20,7 +20,9 @@
  */
 
 require_once(MODULE_REALDIR . 'mdl_webpay/inc/include.php');
+require_once(MDL_WEBPAY_CLASS_REALDIR . 'SC_Mdl_WebPay_Wrapper.php');
 require_once(MDL_WEBPAY_CLASS_REALDIR . 'models/SC_Mdl_WebPay_Models_Charge.php');
+require_once(MDL_WEBPAY_CLASS_REALDIR . 'models/SC_Mdl_WebPay_Models_Module.php');
 
 /**
  * This plugin adds elements to pages for usability of WebPay module.
@@ -78,7 +80,19 @@ class WebPayExt extends SC_Plugin_Base
     function beforeAdminOrderEdit(LC_Page_Ex $objPage)
     {
         if ($objPage->getMode() === 'plg_webpayext_capture') {
-            throw new \Exception("not implemented");
+            $_GET['mode'] = 'recalculate';
+
+            $order_id = $_POST['order_id'];
+            if (empty($order_id)) {
+                return;
+            }
+            $objCharge = new SC_Mdl_WebPay_Models_Charge($order_id);
+            $arrModuleSetting = SC_Mdl_WebPay_Models_Module::loadCurrentSetting();
+            $objWebPay = new SC_Mdl_WebPay_Wrapper($arrModuleSetting['secret_key']);
+            $message = $objCharge->capture($objWebPay);
+            if ($message !== null) {
+                $objPage->plg_webpayext_capture_error = $message;
+            }
         }
     }
 

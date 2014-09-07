@@ -138,4 +138,55 @@ class SC_Mdl_WebPay_Models_Charge
         );
     }
 
+    /**
+     * 指定の注文について WebPay API で実売上化する
+     * エラーメッセージを返す。
+     *
+     * @param  \WebPay\WebPay                $objWebPay      WebPay client
+     * @return string|null                   決済時に発生したエラーを管理者に説明するメッセージ
+     * @throws \WebPay\ApiException          管理者に原因がないエラー(設定ミスによるもの、通信障害によるもの)
+     */
+    public function capture($objWebPay)
+    {
+        $current_total = intval($this->arrOrder['payment_total'], 10);
+        if ($this->getAmount() < $current_total) {
+            return sprintf('仮売上金額(%s円)以上で実売上化することはできません。合計金額を仮売上金額以下にするか、金額を増額する場合は購入者に連絡し、再度購入処理を行ってください。', number_format($this->getAmount()));
+        }
+        try {
+            $objCharge = $objWebPay->chargeCapture(array('id' => $this->getChargeId(), 'amount' => $current_total));
+        } catch (\WebPay\ApiException $e) {
+            $objData = $e->getData();
+            if ($objData && $objData->error) {
+                $message = $objData->error->message;
+                switch ($objData->error->causedBy) {
+                case 'buyer':
+                    return '購入者に起因する問題で決済できませんでした。購入者に連絡して状況をお訪ねください。' . $message;
+                case 'insufficient':
+                    return '不正なリクエストがおこなわれました。WebPayのダッシュボードを確認してください。' . $message;
+                case 'missing':
+                    return '操作対象の課金が見つかりませんでした。WebPayのダッシュボードを確認してください。';
+                case 'service':
+                default:
+                    return '未知のエラーが発生しました。時間をおいてやりなおしてください。' . $message;
+                }
+            }
+            throw $e;
+        }
+
+        $objPurchase = new SC_Helper_Purchase_Ex();
+        $updateData = array(MDL_WEBPAY_CHARGE_DATA_COL => $this->lfConvertToDbChargeData($objCharge));
+        $objQuery = SC_Query_Ex::getSingletonInstance();
+        $objQuery->begin();
+        $objPurchase->sfUpdateOrderStatus(
+            $this->arrOrder['order_id'],
+            ORDER_PRE_END,
+            null, // 加算ポイント
+            null, // 使用ポイント
+            $updateData
+        );
+        $objQuery->commit();
+        $objPurchase->sendOrderMail($this->arrOrder['order_id']);
+
+        return null;
+    }
 }

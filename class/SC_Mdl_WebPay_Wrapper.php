@@ -5,6 +5,7 @@
  * @copyright 2014 WebPay All Rights Reserved.
  */
 
+require(MDL_WEBPAY_REALDIR . 'vendor/autoload.php');
 use WebPay\WebPay;
 
 /**
@@ -30,6 +31,12 @@ class SC_Mdl_WebPay_Wrapper
     {
         $this->lfLog('charge.create', $arrParams);
         return $this->objWebPay->charge->create($arrParams);
+    }
+
+    public function chargeCapture($arrParams)
+    {
+        $this->lfLog('charge.capture', $arrParams);
+        return $this->objWebPay->charge->capture($arrParams);
     }
 
     public function customerCreate($arrParams)
