@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "e6451f959b38a53e8199e85bf0af41dd",
+    "hash": "ad9e3e2a284dffc83c57c6091c86328e",
     "packages": [
         {
             "name": "guzzle/guzzle",
@@ -157,16 +157,16 @@
         },
         {
             "name": "webpay/webpay",
-            "version": "2.1.0",
+            "version": "2.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/webpay/webpay-php.git",
-                "reference": "080efdf6e2d1929cf2f5a5a318e85abb4ff60607"
+                "reference": "e7b555ec52001e7b26232da26d64d51e61b524ee"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webpay/webpay-php/zipball/080efdf6e2d1929cf2f5a5a318e85abb4ff60607",
-                "reference": "080efdf6e2d1929cf2f5a5a318e85abb4ff60607",
+                "url": "https://api.github.com/repos/webpay/webpay-php/zipball/e7b555ec52001e7b26232da26d64d51e61b524ee",
+                "reference": "e7b555ec52001e7b26232da26d64d51e61b524ee",
                 "shasum": ""
             },
             "require": {
@@ -193,7 +193,7 @@
                 }
             ],
             "description": "Bindings of WebPay API",
-            "time": "2014-07-07 10:45:34"
+            "time": "2014-07-30 05:24:09"
         }
     ],
     "packages-dev": [
