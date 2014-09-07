@@ -40,6 +40,14 @@ class SC_Mdl_WebPay_Models_Charge
         return $arrData['livemode'];
     }
 
+    /* 課金詳細ページURL */
+    public function getWebPayPage()
+    {
+        return sprintf('https://webpay.jp/%s/charges/%s',
+                $this->isLiveCharge() ? 'live' : 'test',
+                $this->getChargeId());
+    }
+
     /* 実売上化済みか */
     public function isCaptured()
     {

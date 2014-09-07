@@ -18,4 +18,33 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *}-->
 
-うぇぶぺいだよー
+<script type="text/javascript">
+<!--
+function fnPlgWebPayExtCapture() {
+    if(window.confirm('現在の金額で実売上化をおこないます。受注内容を変更中の場合はさきに保存してください。')) {
+        fnModeSubmit('plg_webpayext_capture', '', '');
+    };
+    return false;
+}
+//-->
+</script>
+
+<h2 id="plg_webpayext_detail">WebPay課金情報</h2>
+<table class="form">
+    <tr>
+        <th>課金詳細ページ</th>
+        <td><a href="<!--{$plg_webpayext_objCharge->getWebPayPage()}-->" target="_blank"><!--{$plg_webpayext_objCharge->getChargeId()}--></a></td>
+    </tr>
+    <tr>
+        <th>状態</th>
+        <td>
+            <!--{if $plg_webpayext_objCharge->isCaptured()}-->
+                <!--{$plg_webpayext_objCharge->getAmount()|default:0|number_format}-->円の実売上
+            <!--{else}-->
+                <!--{$plg_webpayext_objCharge->getAmount()|default:0|number_format}-->円の仮売上
+                <a class="btn-normal" href="javascript:;"
+                   onclick="fnPlgWebPayExtCapture()">実売上化する</a>
+            <!--{/if}-->
+        </td>
+    </tr>
+</table>

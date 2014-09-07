@@ -19,8 +19,12 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/*
- * This plugin add elements to pages for usability of WebPay module
+require_once(MODULE_REALDIR . 'mdl_webpay/inc/include.php');
+require_once(MDL_WEBPAY_CLASS_REALDIR . 'models/SC_Mdl_WebPay_Models_Charge.php');
+
+/**
+ * This plugin adds elements to pages for usability of WebPay module.
+ * This depends on mdl_webpay. Do not use by itself.
  */
 class WebPayExt extends SC_Plugin_Base
 {
@@ -52,7 +56,6 @@ class WebPayExt extends SC_Plugin_Base
             break;
         case DEVICE_TYPE_ADMIN:
         case null: // 未設定は admin
-            error_log($filename);
             if (strpos($filename, 'order/edit.tpl') !== false) {
                 // 個別受注画面にWebPay上のオブジェクトとの連携を挿入する
                 $template = PLUGIN_UPLOAD_REALDIR . $this->arrSelfInfo['plugin_code'] .
@@ -66,5 +69,30 @@ class WebPayExt extends SC_Plugin_Base
 
         // 変更を実行します
         $source = $objTransform->getHTML();
+    }
+
+    /**
+     * hook function called before LC_Page_Admin_Order_Edit
+     * Send requests to WebPay if mode is of plg_webpayext
+     */
+    function beforeAdminOrderEdit(LC_Page_Ex $objPage)
+    {
+        if ($objPage->getMode() === 'plg_webpayext_capture') {
+            throw new \Exception("not implemented");
+        }
+    }
+
+    /**
+     * hook function called after LC_Page_Admin_Order_Edit
+     * Set template variables to show WebPay charge statuses
+     */
+    function afterAdminOrderEdit(LC_Page_Ex $objPage)
+    {
+        $order_id = $objPage->arrForm['order_id']['value'];
+        if (empty($order_id)) {
+            return;
+        }
+        $objCharge = new SC_Mdl_WebPay_Models_Charge($order_id);
+        $objPage->plg_webpayext_objCharge = $objCharge;
     }
 }

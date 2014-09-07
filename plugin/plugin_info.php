@@ -31,6 +31,8 @@ class plugin_info{
     static $AUTHOR_SITE_URL   = 'https://webpay.jp/';
     static $CLASS_NAME        = 'WebPayExt';
     static $HOOK_POINTS       = array(
+        array("LC_Page_Admin_Order_Edit_action_before", 'beforeAdminOrderEdit'),
+        array("LC_Page_Admin_Order_Edit_action_after", 'afterAdminOrderEdit'),
         array('prefilterTransform', 'prefilterTransform'));
     static $LICENSE           = 'LGPL';
 }
