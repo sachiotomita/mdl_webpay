@@ -22,3 +22,5 @@ define('MDL_WEBPAY_INCLUDEFILE_REALFILE', MDL_WEBPAY_REALDIR . 'inc/include . ph
 define('MDL_WEBPAY_LOG_REALFILE_FORMAT', DATA_REALDIR . 'logs/' . MDL_WEBPAY_CODE . '_%s.log');
 
 define('MDL_WEBPAY_CUSTOMER_DATA_COL', 'memo04');
+
+define('MDL_WEBPAY_TESTMODE_INDICATOR_REALFILE', sys_get_temp_dir() . '/.mdl_webbpay_testmode');

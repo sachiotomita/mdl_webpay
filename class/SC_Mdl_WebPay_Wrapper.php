@@ -18,7 +18,11 @@ class SC_Mdl_WebPay_Wrapper
 
     public function __construct($secret_key)
     {
-        $this->objWebPay = new WebPay($secret_key);
+        if (file_exists(MDL_WEBPAY_TESTMODE_INDICATOR_REALFILE)) {
+            $this->objWebPay = new WebPay($secret_key, array('api_base' => 'http://localhost:8012'));
+        } else {
+            $this->objWebPay = new WebPay($secret_key);
+        }
         $this->objWebPay->setAcceptLanguage('ja');
     }
 
