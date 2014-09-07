@@ -150,6 +150,7 @@ class AcceptanceHelper extends \Codeception\Module
         for ($i = 0; $i < $length; $i++) {
             $randomString .= $characters[rand(0, strlen($characters) - 1)];
         }
+
         return $randomString;
     }
 
@@ -195,7 +196,7 @@ class AcceptanceHelper extends \Codeception\Module
 
     private function installMdlWebPay()
     {
-        include('install_webpay.php');
+        include 'install_webpay.php';
     }
 
     private function loadLogFile()

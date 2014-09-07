@@ -6,7 +6,7 @@ $I = new AcceptanceTester\CustomerSteps($scenario);
 $I->am('a new customer');
 $I->wantTo('update my card');
 $admin = $I->haveFriend('admin');
-$admin->does(function(AcceptanceTester $I) {
+$admin->does(function (AcceptanceTester $I) {
     $steps = new AcceptanceTester\AdminSteps($I);
     $steps->registerWebPayModule();
 });
@@ -54,7 +54,7 @@ $I->seeInData('customer', $customer_id);
 $I->seeInData('currency', 'jpy');
 $I->seeInData('description', '2');
 
-$admin->does(function(AcceptanceTester $I) {
+$admin->does(function (AcceptanceTester $I) {
     $steps = new AcceptanceTester\AdminSteps($I);
     $steps->seeLastOrder([
         'customer_id' => '1',

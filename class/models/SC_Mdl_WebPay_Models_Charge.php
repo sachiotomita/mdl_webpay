@@ -30,6 +30,7 @@ class SC_Mdl_WebPay_Models_Charge
     public function getChargeId()
     {
         $arrData = $this->lfGetChargeData();
+
         return $arrData['id'];
     }
 
@@ -37,6 +38,7 @@ class SC_Mdl_WebPay_Models_Charge
     public function isLiveCharge()
     {
         $arrData = $this->lfGetChargeData();
+
         return $arrData['livemode'];
     }
 
@@ -52,6 +54,7 @@ class SC_Mdl_WebPay_Models_Charge
     public function isCaptured()
     {
         $arrData = $this->lfGetChargeData();
+
         return $arrData['captured'];
     }
 
@@ -59,6 +62,7 @@ class SC_Mdl_WebPay_Models_Charge
     public function getAmount()
     {
         $arrData = $this->lfGetChargeData();
+
         return $arrData['real_amount'];
     }
 
@@ -71,11 +75,11 @@ class SC_Mdl_WebPay_Models_Charge
      * 指定の注文について WebPay API で課金をおこない、決済を完了する
      * エラーメッセージを返す。
      *
-     * @param  \WebPay\WebPay                $objWebPay      WebPay client
-     * @param  bool                          $authorize      trueなら仮売上にする
-     * @param  array                         $arrPayer       支払方法。'customer' => customer_id か 'card' => token_id
-     * @return string|null                   決済時に発生したエラーを購入者に説明するメッセージ
-     * @throws \WebPay\ApiException          購入者に原因がないエラー(設定ミスによるもの、通信障害によるもの)
+     * @param  \WebPay\WebPay       $objWebPay WebPay client
+     * @param  bool                 $authorize trueなら仮売上にする
+     * @param  array                $arrPayer  支払方法。'customer' => customer_id か 'card' => token_id
+     * @return string|null          決済時に発生したエラーを購入者に説明するメッセージ
+     * @throws \WebPay\ApiException 購入者に原因がないエラー(設定ミスによるもの、通信障害によるもの)
      */
     public function createCharge($objWebPay, $authorize, $arrPayer)
     {
@@ -87,7 +91,7 @@ class SC_Mdl_WebPay_Models_Charge
         } catch (\WebPay\ErrorResponse\InvalidRequestException $e) {
             if ($e->getData()->error->param == 'card') {
                 return '不正な操作が行われたため決済できませんでした。カード情報を再入力してください';
-            } else if ($e->getData()->error->param === 'id' || $e->getData()->error->param === 'customer') {
+            } elseif ($e->getData()->error->param === 'id' || $e->getData()->error->param === 'customer') {
                 return 'カード情報が見付かりませんでした。カード情報を再入力してください';
             } else {
                 throw $e;
@@ -125,6 +129,7 @@ class SC_Mdl_WebPay_Models_Charge
         foreach ($arrPayer as $k => $v) {
             $arrChargeParams[$k] = $v;
         }
+
         return $arrChargeParams;
     }
 
@@ -142,9 +147,9 @@ class SC_Mdl_WebPay_Models_Charge
      * 指定の注文について WebPay API で実売上化する
      * エラーメッセージを返す。
      *
-     * @param  \WebPay\WebPay                $objWebPay      WebPay client
-     * @return string|null                   決済時に発生したエラーを管理者に説明するメッセージ
-     * @throws \WebPay\ApiException          管理者に原因がないエラー(設定ミスによるもの、通信障害によるもの)
+     * @param  \WebPay\WebPay       $objWebPay WebPay client
+     * @return string|null          決済時に発生したエラーを管理者に説明するメッセージ
+     * @throws \WebPay\ApiException 管理者に原因がないエラー(設定ミスによるもの、通信障害によるもの)
      */
     public function capture($objWebPay)
     {

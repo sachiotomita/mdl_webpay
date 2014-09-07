@@ -19,7 +19,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-class plugin_info{
+class plugin_info
+{
     static $PLUGIN_CODE       = 'WebPayExt';
     static $PLUGIN_NAME       = 'WebPay決済モジュール拡張プラグイン';
     // Inherit module's version. Bump when plugin code changes
@@ -36,4 +37,3 @@ class plugin_info{
         array('prefilterTransform', 'prefilterTransform'));
     static $LICENSE           = 'LGPL';
 }
-?>

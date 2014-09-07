@@ -3,7 +3,7 @@ $I = new AcceptanceTester\CustomerSteps($scenario);
 $I->am('a new customer');
 $I->wantTo('purchase with my card');
 $admin = $I->haveFriend('admin');
-$admin->does(function(AcceptanceTester $I) {
+$admin->does(function (AcceptanceTester $I) {
     $steps = new AcceptanceTester\AdminSteps($I);
     $steps->registerWebPayModule();
 });
@@ -26,7 +26,7 @@ $I->seeInData('description', '1');
 
 $I->seeInLogs(['/https:\/\/api\.webpay\.jp charge\.create: a:4:{s:6:"amount";i:2782;s:8:"currency";s:3:"jpy";s:11:"description";s:1:"1";s:4:"card";s:19:"tok_.*";} from 127.0.0.1/']);
 
-$admin->does(function(AcceptanceTester $I) {
+$admin->does(function (AcceptanceTester $I) {
     $steps = new AcceptanceTester\AdminSteps($I);
     $steps->seeLastOrder([
         'customer_id' => '1',

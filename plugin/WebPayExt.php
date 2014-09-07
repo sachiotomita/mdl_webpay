@@ -31,12 +31,12 @@ require_once(MDL_WEBPAY_CLASS_REALDIR . 'models/SC_Mdl_WebPay_Models_Module.php'
 class WebPayExt extends SC_Plugin_Base
 {
     // do nothing
-    function install($arrPlugin)
+    public function install($arrPlugin)
     {
     }
 
     // do nothing
-    function uninstall($arrPlugin)
+    public function uninstall($arrPlugin)
     {
     }
 
@@ -44,14 +44,15 @@ class WebPayExt extends SC_Plugin_Base
      * prefilterコールバック関数
      * テンプレートの変更処理を行います.
      *
-     * @param string &$source テンプレートのHTMLソース
-     * @param LC_Page_Ex $objPage ページオブジェクト
-     * @param string $filename テンプレートのファイル名
+     * @param  string     &$source  テンプレートのHTMLソース
+     * @param  LC_Page_Ex $objPage  ページオブジェクト
+     * @param  string     $filename テンプレートのファイル名
      * @return void
      */
-    function prefilterTransform(&$source, LC_Page_Ex $objPage, $filename) {
+    public function prefilterTransform(&$source, LC_Page_Ex $objPage, $filename)
+    {
         $objTransform = new SC_Helper_Transform($source);
-        switch($objPage->arrPageLayout['device_type_id']){
+        switch ($objPage->arrPageLayout['device_type_id']) {
         case DEVICE_TYPE_MOBILE:
         case DEVICE_TYPE_SMARTPHONE:
         case DEVICE_TYPE_PC:
@@ -77,7 +78,7 @@ class WebPayExt extends SC_Plugin_Base
      * hook function called before LC_Page_Admin_Order_Edit
      * Send requests to WebPay if mode is of plg_webpayext
      */
-    function beforeAdminOrderEdit(LC_Page_Ex $objPage)
+    public function beforeAdminOrderEdit(LC_Page_Ex $objPage)
     {
         if ($objPage->getMode() === 'plg_webpayext_capture') {
             $_GET['mode'] = 'recalculate';
@@ -100,7 +101,7 @@ class WebPayExt extends SC_Plugin_Base
      * hook function called after LC_Page_Admin_Order_Edit
      * Set template variables to show WebPay charge statuses
      */
-    function afterAdminOrderEdit(LC_Page_Ex $objPage)
+    public function afterAdminOrderEdit(LC_Page_Ex $objPage)
     {
         $order_id = $objPage->arrForm['order_id']['value'];
         if (empty($order_id)) {

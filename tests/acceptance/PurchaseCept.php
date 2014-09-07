@@ -2,7 +2,7 @@
 $I = new AcceptanceTester($scenario);
 $I->wantTo('purchase an item without login');
 $admin = $I->haveFriend('admin');
-$admin->does(function(AcceptanceTester $I) {
+$admin->does(function (AcceptanceTester $I) {
     $steps = new AcceptanceTester\AdminSteps($I);
     $steps->registerWebPayModule();
 });
@@ -54,7 +54,7 @@ $I->seeInData('card');
 $I->seeInData('currency', 'jpy');
 $I->seeInData('description', '1');
 
-$admin->does(function(AcceptanceTester $I) {
+$admin->does(function (AcceptanceTester $I) {
     $steps = new AcceptanceTester\AdminSteps($I);
     $steps->seeLastOrder([
         'customer_id' => null,

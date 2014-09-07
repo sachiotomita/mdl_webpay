@@ -2,8 +2,7 @@
 // Here you can initialize variables that will be available to your tests
 
 require_once '../../../../html/require.php';
-require_once('inc/include.php');
-use WebPay\WebPay;
+require_once 'inc/include.php';
 
 define('ADMIN_NAME', 'admin');
 define('ADMIN_PASSWORD', 'password');
