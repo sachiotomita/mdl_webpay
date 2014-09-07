@@ -84,3 +84,17 @@ php install_webpay.php
 
 モジュールの設計上、購入者の個人情報、クレジットカード情報、EC-CUBE の設定情報がログに出力されることはありません。
 スクリプトを変更する際はこの点が維持されるよう注意してください。
+
+## テスト
+
+[Codeception](http://codeception.com) を利用した acceptance test を実施しています。
+次の手順で実行してください。
+
+- codeception の実行には PHP 5.4+ が必要です
+- codeception.yml の設定に従ってデータベースを作成します
+- port 9999 で EC-CUBE の HTTP サーバを立ち上げます
+- `phantomjs --webdriver=4444` でテスト用の headless browser を準備します
+- `codecept.phar run` でテストを実行します
+
+Pull Request を出すときは必ず上述の手順でテストを行い、全ケースが通過することを確認してください。
+機能追加を行う場合は該当のテストケースを追加してください。
