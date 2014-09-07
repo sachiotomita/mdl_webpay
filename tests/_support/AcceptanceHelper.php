@@ -79,7 +79,7 @@ class AcceptanceHelper extends \Codeception\Module
             'livemode'        => false,
             'currency'        => 'jpy',
             'description'     => '',
-            'amount'          => 1200,
+            'amount'          => 2782,
             'amount_refunded' => 0,
             'customer'        => null,
             'recursion'       => null,

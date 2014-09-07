@@ -1,11 +1,17 @@
 <?php
 namespace AcceptanceTester;
 
+use GuzzleHttp\Client;
+
 class AdminSteps extends \AcceptanceTester
 {
-    public function __construct(\AcceptanceTester $I)
+    public function __construct($tester)
     {
-        parent::__construct($I->scenario);
+        if (is_a($tester, '\AcceptanceTester')) {
+            parent::__construct($tester->scenario);
+        } else {
+            parent::__construct($tester);
+        }
     }
 
     public function login()
@@ -27,6 +33,34 @@ class AdminSteps extends \AcceptanceTester
         $I->fillField('publishable_key', WEBPAY_PUBLISHABLE_KEY);
         $I->selectOption('input[name=payment]', $payment);
         $I->click('この内容で登録する');
+
+        $I->amOnPage('/admin/ownersstore/');
+        $uri = 'http://localhost:9999/admin/ownersstore/';
+        $transactionId = $I->grabAttributeFrom('input[name=transactionid]', 'value');
+        $sessionId = $I->grabCookie('ECSESSID');
+        // posting file and handling confirm window are impossible for ghostdriver
+        $client = new Client();
+        $I->expectTo('install plugin');
+        $client->post($uri, [
+            'body' => [
+                'transactionid' => $transactionId,
+                'mode' => 'install',
+                'plugin_file' => fopen('WebPayExt.tar.gz', 'r'),
+            ],
+            'cookies' => ['ECSESSID' => $sessionId],
+        ]);
+        $client->post($uri, [
+            'body' => [
+                'transactionid' => $transactionId,
+                'mode' => 'enable',
+                'plugin_id' => 1,
+                'enable' => 1,
+            ],
+            'cookies' => ['ECSESSID' => $sessionId],
+        ]);
+        $I->amOnPage('/admin/ownersstore/');
+        $I->see('WebPay決済モジュール拡張プラグイン');
+        $I->seeCheckboxIsChecked('input#plugin_enable');
 
         $I->seeInDatabase('dtb_payment',  array('payment_id' => 5, 'memo03' => MDL_WEBPAY_CODE));
         $I->haveInDatabase('dtb_payment_options', array('deliv_id' => 1, 'payment_id' => 5, 'rank' => 5));
@@ -55,11 +89,17 @@ class AdminSteps extends \AcceptanceTester
                 $I->seeOptionIsSelected('select[name="payment_id"]', $value);
                 break;
             case 'status':
-                $I->seeOptionIsSelected('select[name="status"]', $value);
+                $I->seeStatus($value);
                 break;
             default:
                 throw new \Exception('Unknown param ' . $param);
             }
         }
+    }
+
+    public function seeStatus($statusValue)
+    {
+        $I = $this;
+        $I->seeOptionIsSelected('select[name="status"]', $statusValue);
     }
 }

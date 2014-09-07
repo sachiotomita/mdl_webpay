@@ -3,6 +3,15 @@ namespace AcceptanceTester;
 
 class CustomerSteps extends \AcceptanceTester
 {
+    public function __construct($tester)
+    {
+        if (is_a($tester, '\AcceptanceTester')) {
+            parent::__construct($tester->scenario);
+        } else {
+            parent::__construct($tester);
+        }
+    }
+
     public function login()
     {
         $I = $this;
