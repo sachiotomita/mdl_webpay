@@ -1,6 +1,6 @@
 <!--{*
  * WebPayExt
- * Copyright (C) 2012 WebPay. All Rights Reserved.
+ * Copyright (C) 2014 WebPay. All Rights Reserved.
  * https://webpay.jp/
  *
  * This library is free software; you can redistribute it and/or
