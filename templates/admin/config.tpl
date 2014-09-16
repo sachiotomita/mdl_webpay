@@ -30,6 +30,21 @@
                         <input type="text" name="<!--{$arrForm[$key].keyname}-->" value="<!--{$arrForm[$key].value|h}-->" size="30" class="box30" maxlength="<!--{$arrForm[$key].length}-->" style="<!--{$arrErr[$key]|sfGetErrorColor}-->" />
                     </td>
                 </tr>
+                <tr>
+                    <!--{assign var=key value="payment"}-->
+                    <th><!--{$arrForm[$key].disp_name}--></th>
+                    <td>
+                        <span class="attention"><!--{$arrErr[$key]}--></span>
+                        <label>
+                            <input type="radio" name="<!--{$arrForm[$key].keyname}-->" value="authorize" <!--{if $arrForm[$key].value === 'authorize'}-->checked="checked"<!--{/if}--> />
+                            購入時に仮売上(オーソリ)を作成し、受注管理画面から実売上化する
+                        </label>
+                        <label>
+                            <input type="radio" name="<!--{$arrForm[$key].keyname}-->" value="capture" <!--{if $arrForm[$key].value === 'capture'}-->checked="checked"<!--{/if}--> />
+                            購入時に即時、実売上化する
+                        </label>
+                    </td>
+                </tr>
             </table>
 
         <div class="btn-area">

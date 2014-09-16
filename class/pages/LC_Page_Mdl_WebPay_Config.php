@@ -108,6 +108,7 @@ class LC_Page_Mdl_WebPay_Config extends LC_Page_Admin_Ex
         $max_length = 256;
         $objFormParam->addParam('非公開鍵', 'secret_key', $max_length, 'a', array('EXIST_CHECK', 'MAX_LENGTH_CHECK', 'GRAPH_CHECK'));
         $objFormParam->addParam('公開可能鍵', 'publishable_key', $max_length, 'a', array('EXIST_CHECK', 'MAX_LENGTH_CHECK', 'GRAPH_CHECK'));
+        $objFormParam->addParam('購入時の支払処理', 'payment', $max_length, 'a', array('EXIST_CHECK', 'MAX_LENGTH_CHECK', 'GRAPH_CHECK'));
     }
 
     /* バリデーション済みの設定値を dtb_module に保存 */

@@ -5,6 +5,7 @@
  * @copyright 2014 WebPay All Rights Reserved.
  */
 
+require(MDL_WEBPAY_REALDIR . 'vendor/autoload.php');
 use WebPay\WebPay;
 
 /**
@@ -18,37 +19,53 @@ class SC_Mdl_WebPay_Wrapper
 
     public function __construct($secret_key)
     {
-        $this->objWebPay = new WebPay($secret_key);
+        if (file_exists(MDL_WEBPAY_TESTMODE_INDICATOR_REALFILE)) {
+            $this->objWebPay = new WebPay($secret_key, array('api_base' => 'http://localhost:8012'));
+        } else {
+            $this->objWebPay = new WebPay($secret_key);
+        }
         $this->objWebPay->setAcceptLanguage('ja');
     }
 
     public function chargeCreate($arrParams)
     {
         $this->lfLog('charge.create', $arrParams);
+
         return $this->objWebPay->charge->create($arrParams);
+    }
+
+    public function chargeCapture($arrParams)
+    {
+        $this->lfLog('charge.capture', $arrParams);
+
+        return $this->objWebPay->charge->capture($arrParams);
     }
 
     public function customerCreate($arrParams)
     {
         $this->lflog('customer.create', $arrParams);
+
         return $this->objWebPay->customer->create($arrParams);
     }
 
     public function customerUpdate($arrParams)
     {
         $this->lflog('customer.update', $arrParams);
+
         return $this->objWebPay->customer->update($arrParams);
     }
 
     public function customerRetrieve($customer_id)
     {
         $this->lflog('customer.retrieve', $customer_id);
+
         return $this->objWebPay->customer->retrieve($customer_id);
     }
 
     public function customerDeleteActiveCard($customer_id)
     {
         $this->lflog('customer.delete_active_card', $customer_id);
+
         return $this->objWebPay->customer->deleteActiveCard($customer_id);
     }
 

@@ -7,6 +7,7 @@
 
 require_once(CLASS_EX_REALDIR . "page_extends/LC_Page_Ex.php");
 require_once(MDL_WEBPAY_CLASS_REALDIR . 'SC_Mdl_WebPay_Wrapper.php');
+require_once(MDL_WEBPAY_CLASS_REALDIR . 'models/SC_Mdl_WebPay_Models_Charge.php');
 require_once(MDL_WEBPAY_CLASS_REALDIR . 'models/SC_Mdl_WebPay_Models_Customer.php');
 require_once(MDL_WEBPAY_CLASS_REALDIR . 'models/SC_Mdl_WebPay_Models_Module.php');
 
@@ -56,14 +57,14 @@ class LC_Page_Mdl_WebPay_Payment extends LC_Page_Ex
         }
 
         $objPurchase = new SC_Helper_Purchase_Ex();
-        $arrOrder = $objPurchase->getOrder($order_id);
-        $this->tpl_title = $arrOrder['payment_method'];
+        $objCharge= new SC_Mdl_WebPay_Models_Charge($order_id);
+        $this->tpl_title = $objCharge->arrOrder['payment_method'];
 
-        $this->validateOrderConsistency($arrOrder);
+        $this->validateOrderConsistency($objCharge->arrOrder);
 
         $arrModuleSetting = SC_Mdl_WebPay_Models_Module::loadCurrentSetting();
         $objWebPay = new SC_Mdl_WebPay_Wrapper($arrModuleSetting['secret_key']);
-        $objCustomer = new SC_Mdl_WebPay_Models_Customer($objWebPay, $arrOrder['customer_id']);
+        $objCustomer = new SC_Mdl_WebPay_Models_Customer($objWebPay, $objCharge->arrOrder['customer_id']);
         $objFormParam = new SC_FormParam_Ex();
         $this->initFormParam($objFormParam);
 
@@ -79,13 +80,20 @@ class LC_Page_Mdl_WebPay_Payment extends LC_Page_Ex
                 $this->arrErr = $this->checkFormParamError($objFormParam);
                 if (empty($this->arrErr)) {
                     $arrData = $objFormParam->getHashArray();
-                    $message = $this->createCharge($objWebPay, $arrOrder, $objCustomer, $arrData);
-                    if ($message === null) {
-                        SC_Response_Ex::sendRedirect(SHOPPING_COMPLETE_URLPATH);
-                        SC_Response_Ex::actionExit();
-                    } else {
+                    $arrPayer = array();
+                    $message = $this->selectPayer($objCustomer, $arrData, $arrPayer);
+                    if ($message !== null) {
                         $this->tpl_webpay_charge_error = $message;
+                        break;
                     }
+                    $authorize = $arrModuleSetting['payment'] == 'authorize';
+                    $message = $objCharge->createCharge($objWebPay, $authorize, $arrPayer);
+                    if ($message !== null) {
+                        $this->tpl_webpay_charge_error = $message;
+                        break;
+                    }
+                    SC_Response_Ex::sendRedirect(SHOPPING_COMPLETE_URLPATH);
+                    SC_Response_Ex::actionExit();
                     break;
                 }
                 break;
@@ -133,6 +141,7 @@ class LC_Page_Mdl_WebPay_Payment extends LC_Page_Ex
 
             // 会計済み。許容しうる
             case ORDER_NEW:
+            case ORDER_PAY_WAIT:
             case ORDER_PRE_END:
                 SC_Response_Ex::sendRedirect(SHOPPING_COMPLETE_URLPATH);
                 SC_Response_Ex::actionExit();
@@ -173,83 +182,36 @@ class LC_Page_Mdl_WebPay_Payment extends LC_Page_Ex
     }
 
     /**
-     * WebPay API で課金をおこない、決済を完了する
+     * 顧客情報と入力パラメータから支払ソースを決定する
      *
-     * @param  \WebPay\WebPay                $objWebPay      WebPay client
-     * @param  array                         $arrOrder       dtb_order に入っている注文情報の列
-     * @param  array                         $arrPaymentData 利用者の入力
      * @param  SC_Mdl_WebPay_Models_Customer $objCustomer
+     * @param  array                         $arrPaymentData 利用者の入力
+     * @param  array                         &$arrOutPayer   output: 選択された支払いソースの情報
      * @return string|null                   決済時に発生したエラーを購入者に説明するメッセージ
      * @throws \WebPay\ApiException          購入者に原因がないエラー(設定ミスによるもの、通信障害によるもの)
      */
-    private function createCharge($objWebPay, $arrOrder, $objCustomer, $arrPaymentData)
+    private function selectPayer($objCustomer, $arrPaymentData, &$arrOutPayer)
     {
-        $arrChargeParams = array(
-            'amount' => $arrOrder['payment_total'],
-            'currency' => 'jpy',
-            'description' => $arrOrder['order_id'],
-        );
         switch ($arrPaymentData['card_info']) {
             case 'customer':
                 $customer_id = $objCustomer->loadWebPayId();
                 if ($customer_id === null) {
                     return 'カード情報が見付かりませんでした。カード情報を再入力してください';
                 }
-                $err = $this->createChargeByCustomer($objWebPay, $arrChargeParams, $customer_id);
-                if ($err !== null)
-                    return $err;
+                $arrOutPayer['customer'] = $customer_id;
                 break;
             case 'customer_from_token':
                 $customer_id = $objCustomer->saveCardForCustomer($arrPaymentData['webpay_token']);
                 if ($customer_id === null) {
                     return 'カード情報の登録に失敗したため決済できませんでした。カード情報を再入力してください';
                 }
-                $err = $this->createChargeByCustomer($objWebPay, $arrChargeParams, $customer_id);
-                if ($err !== null)
-                    return $err;
+                $arrOutPayer['customer'] = $customer_id;
                 break;
             case 'token':
-                $arrChargeParams['card'] = $arrPaymentData['webpay_token'];
-                try {
-                    $objWebPay->chargeCreate($arrChargeParams);
-                } catch (\WebPay\ErrorResponse\CardException $e) {
-                    return $e->getData()->error->message;
-                } catch (\WebPay\ErrorResponse\InvalidRequestException $e) {
-                    if ($e->getData()->error->param == 'card') {
-                        return '不正な操作が行われたため決済できませんでした。カード情報を再入力してください';
-                    } else {
-                        throw $e;
-                    }
-                }
+                $arrOutPayer['card'] = $arrPaymentData['webpay_token'];
                 break;
             default:
                 return '未知の決済方法です。再度入力してください';
-        }
-
-        $objPurchase = new SC_Helper_Purchase_Ex();
-        $objQuery = SC_Query_Ex::getSingletonInstance();
-        $objQuery->begin();
-        $objPurchase->sfUpdateOrderStatus($arrOrder['order_id'], ORDER_PRE_END);
-        $objQuery->commit();
-        $objPurchase->sendOrderMail($arrOrder['order_id']);
-
-        return null;
-    }
-
-    /* customer_id をつかって顧客を作成 */
-    private function createChargeByCustomer($objWebPay, $arrChargeParams, $customer_id)
-    {
-        $arrChargeParams['customer'] = $customer_id;
-        try {
-            $objWebPay->chargeCreate($arrChargeParams);
-        } catch (\WebPay\ErrorResponse\CardException $e) {
-            return $e->getData()->error->message;
-        } catch (\WebPay\ErrorResponse\InvalidRequestException $e) {
-            if ($e->getData()->error->param === 'id' || $e->getData()->error->param === 'customer') {
-                return 'カード情報が見付かりませんでした。カード情報を再入力してください';
-            } else {
-                throw $e;
-            }
         }
 
         return null;
