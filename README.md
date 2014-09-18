@@ -94,7 +94,7 @@ php install_webpay.php
 - codeception.yml の設定に従ってデータベースを作成します
 - port 9999 で EC-CUBE の HTTP サーバを立ち上げます
 - `phantomjs --webdriver=4444` でテスト用の headless browser を準備します
-- `codecept.phar run` でテストを実行します
+- `vendor/bin/codecept run` でテストを実行します
 
 Pull Request を出すときは必ず上述の手順でテストを行い、全ケースが通過することを確認してください。
 機能追加を行う場合は該当のテストケースを追加してください。
