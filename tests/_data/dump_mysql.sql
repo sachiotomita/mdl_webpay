@@ -744,7 +744,7 @@ CREATE TABLE `dtb_customer` (
 
 LOCK TABLES `dtb_customer` WRITE;
 /*!40000 ALTER TABLE `dtb_customer` DISABLE KEYS */;
-INSERT INTO `dtb_customer` VALUES (1,'試験','太郎','シケン','タロウ',NULL,'100','0001',NULL,392,3,'代田区神田神保町','1-3-5','test@example.com',NULL,'0120','123','456',NULL,NULL,NULL,1,NULL,'1901-01-01 00:00:00','ec729f5a1ce8d1aabb79377a955bb7108fa391da8e12389852b824a5bdd29fee',1,'ec729f5a1ce8d1aabb79377a955bb7108fa391da8e12389852b824a5bdd29fee','biatrulouh','r540860ecc54d67bcRBAdp',NULL,NULL,0,0,0,NULL,2,'2014-09-04 12:54:04','2014-09-04 12:54:04',0,NULL,3);
+INSERT INTO `dtb_customer` VALUES (1,'試験','太郎','シケン','タロウ',NULL,'100','0001',NULL,392,3,'代田区神田神保町','1-3-5','test@example.com',NULL,'0120','123','456',NULL,NULL,NULL,1,NULL,'1901-01-01 00:00:00','4cc377ee1a08ed679034cbea33199055355fc915e40816bc0b85cd674f02306f',1,'ec729f5a1ce8d1aabb79377a955bb7108fa391da8e12389852b824a5bdd29fee','biatrulouh','r540860ecc54d67bcRBAdp',NULL,NULL,0,0,0,NULL,2,'2014-09-04 12:54:04','2014-09-04 12:54:04',0,NULL,3);
 /*!40000 ALTER TABLE `dtb_customer` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1274,7 +1274,7 @@ CREATE TABLE `dtb_member` (
 
 LOCK TABLES `dtb_member` WRITE;
 /*!40000 ALTER TABLE `dtb_member` DISABLE KEYS */;
-INSERT INTO `dtb_member` VALUES (1,'dummy',NULL,'dummy','dummy','dummy',0,0,1,1,0,'2014-09-04 12:48:40','2014-09-04 12:48:40',NULL),(2,'管理者',NULL,'admin','0d8fb74cbafbda30bf4ce45f53e7ca881542091f6508b4229d03f3b758a1fb51','sloseboupi',0,1,1,0,0,'2014-09-04 12:48:45','2014-09-04 12:48:45','2014-09-04 21:48:53');
+INSERT INTO `dtb_member` VALUES (1,'dummy',NULL,'dummy','dummy','dummy',0,0,1,1,0,'2014-09-04 12:48:40','2014-09-04 12:48:40',NULL),(2,'管理者',NULL,'admin','86d9c952e9e3fc9881a18abe55781206fb61e6fb73cbf9943d6e8ca8c0dbf275','triagasust',0,1,1,0,0,'2014-09-04 12:48:45','2014-09-04 12:48:45','2014-09-04 21:48:53');
 /*!40000 ALTER TABLE `dtb_member` ENABLE KEYS */;
 UNLOCK TABLES;
 

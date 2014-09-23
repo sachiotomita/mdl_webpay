@@ -47,7 +47,7 @@ class LC_Page_Mdl_WebPay_Config extends LC_Page_Admin_Ex
      */
     public function action()
     {
-        $this->initPaymentMethod();
+        $this->initPaymentMethod($_SESSION['member_id']);
         $arrSetting = SC_Mdl_WebPay_Models_Module::loadCurrentSetting(true);
 
         $objFormParam = new SC_FormParam_Ex();
@@ -77,7 +77,7 @@ class LC_Page_Mdl_WebPay_Config extends LC_Page_Admin_Ex
      *
      * @return boolean 実行した場合は true
      */
-    private function initPaymentMethod()
+    private function initPaymentMethod($current_member_id)
     {
         $objQuery = SC_Query::getSingletonInstance();
         $isExists = $objQuery->exists('dtb_payment', 'module_id = ?', array(MDL_WEBPAY_ID));
@@ -88,6 +88,7 @@ class LC_Page_Mdl_WebPay_Config extends LC_Page_Admin_Ex
         // rank, create_date, update_date, payment_id は自動設定される
         $arrVal = array(
             'payment_method' => 'クレジットカード決済',
+            'creator_id' => $current_member_id,
             'charge_flg' => 2, // 決済手数料設定不可
             'rule_min' => 50, // 設定できる最低金額の下限
             'upper_rule_max'  => 9999999, // 設定できる最高金額の上限

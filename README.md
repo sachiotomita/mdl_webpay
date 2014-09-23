@@ -92,9 +92,12 @@ php install_webpay.php
 
 - codeception の実行には PHP 5.4+ が必要です
 - codeception.yml の設定に従ってデータベースを作成します
+    - MySQL と PostgreSQL の両方でテストしてください
+- `tests/_data/eccube_config.php` を `ECCUBE_ROOT/data/config/config.php` にコピーします
+    - 利用するデータベースに合わせて `DB_TYPE` を変更してください
 - port 9999 で EC-CUBE の HTTP サーバを立ち上げます
 - `phantomjs --webdriver=4444` でテスト用の headless browser を準備します
-- `codecept.phar run` でテストを実行します
+- `vendor/bin/codecept run` でテストを実行します
 
 Pull Request を出すときは必ず上述の手順でテストを行い、全ケースが通過することを確認してください。
 機能追加を行う場合は該当のテストケースを追加してください。

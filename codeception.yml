@@ -10,8 +10,9 @@ settings:
     memory_limit: 1024M
 modules:
     config:
+        # Replace "mysql" with "pgsql" to use pgsql
         Db:
             dsn: 'mysql:host=127.0.0.1;dbname=eccube_test'
             user: 'eccube_user'
             password: 'eccube_pass'
-            dump: tests/_data/dump.sql
+            dump: tests/_data/dump_mysql.sql
