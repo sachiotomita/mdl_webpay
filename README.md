@@ -38,7 +38,7 @@ git clone https://github.com/webpay/mdl_webpay.git
 
 ```
 cd mdl_webpay
-composer.phar install
+php composer.phar install --no-dev
 ```
 
 - install_webpay.php を実行してデータベースに決済モジュールを登録します。

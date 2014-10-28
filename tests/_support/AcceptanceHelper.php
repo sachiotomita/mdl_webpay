@@ -202,6 +202,7 @@ class AcceptanceHelper extends \Codeception\Module
     private function loadLogFile()
     {
         $logName = sprintf(MDL_WEBPAY_LOG_REALFILE_FORMAT, date('Ymd'));
+        touch($logName);
         $this->logFile = fopen($logName, 'r');
         fseek($this->logFile, 0, SEEK_END);
     }
