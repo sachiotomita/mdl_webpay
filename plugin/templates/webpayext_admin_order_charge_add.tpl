@@ -31,6 +31,7 @@ function fnPlgWebPayExtCapture() {
 
 <h2 id="plg_webpayext_detail">WebPay課金情報</h2>
 <table class="form">
+    <!--{if $plg_webpayext_objCharge}-->
     <tr>
         <th>課金詳細ページ</th>
         <td><a href="<!--{$plg_webpayext_objCharge->getWebPayPage()}-->" target="_blank"><!--{$plg_webpayext_objCharge->getChargeId()}--></a></td>
@@ -50,4 +51,7 @@ function fnPlgWebPayExtCapture() {
             <!--{/if}-->
         </td>
     </tr>
+    <!--{else}-->
+    <tr><td>課金は未作成です</td></tr>
+    <!--{/if}-->
 </table>
